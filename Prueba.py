@@ -32,7 +32,6 @@ def show_next():
     currentImage = next(images)
     currentImageElements = currentImage.split('/')
     imageName = currentImageElements[-1][0:-4]
-    print(imageName)
     
     labels = root.winfo_children()
     labels[0].configure(text=imageName)
@@ -41,13 +40,13 @@ def show_next():
     root.after(1000, show_next)
 
 with sr.Microphone() as source:
-    print("Say Something...")
+    print("Di algo...")
     audio = r.listen(source)
 
     try:
         text = r.recognize_google(audio, language='es-ES')
         palabra = "{}".format(text)
-        print("What did you say: {}".format(text))
+        print("Tu dijiste: {}".format(text))
         
         palabra = normalize(palabra)
         resSplit = palabra.split()
@@ -69,6 +68,6 @@ with sr.Microphone() as source:
 
     except Exception as e:
         print(e)
-        print("I am sorry! I can not understand!")
-
+        print("Perdon pero no entiendo")
+        
 
