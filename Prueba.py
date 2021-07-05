@@ -2,6 +2,19 @@ import speech_recognition as sr
 
 r = sr.Recognizer()
 
+
+from tkinter import Tk, PhotoImage, Label, Text, INSERT
+from glob import glob
+from itertools import cycle
+
+root = Tk()
+root.title("Traductor de voz a lengua de señas")
+
+root.geometry("720x360")
+
+
+
+
 def normalize(s):
     replacements = (
         ("á", "a"),
@@ -14,6 +27,19 @@ def normalize(s):
         s = s.replace(a, b).replace(a.upper(), b.upper())
     return s
 
+
+def show_next():
+    currentImage = next(images)
+    currentImageElements = currentImage.split('/')
+    imageName = currentImageElements[-1][0:-4]
+    print(imageName)
+    
+    labels = root.winfo_children()
+    labels[0].configure(text=imageName)
+    
+    image.configure(file=currentImage)
+    root.after(1000, show_next)
+
 with sr.Microphone() as source:
     print("Say Something...")
     audio = r.listen(source)
@@ -22,8 +48,27 @@ with sr.Microphone() as source:
         text = r.recognize_google(audio, language='es-ES')
         palabra = "{}".format(text)
         print("What did you say: {}".format(text))
+        
         palabra = normalize(palabra)
         resSplit = palabra.split()
+        for index, word in enumerate(resSplit):
+            resSplit[index] = 'images/{}.png'.format(word) 
+
         print(resSplit)
-    except:
+
+       
+        image = PhotoImage()
+        image = image.zoom(25)
+        image = image.subsample(32) 
+        lbl = Label(root, text="d", image=image, compound='bottom', font=('Helvatical bold',20)).pack()
+       
+        # start slide show and GUI main loop
+        images = cycle(resSplit)
+        show_next()
+        root.mainloop()
+
+    except Exception as e:
+        print(e)
         print("I am sorry! I can not understand!")
+
+
