@@ -7,7 +7,10 @@ r = sr.Recognizer()
 from tkinter import Tk, PhotoImage, Label, Text, INSERT
 from glob import glob
 from itertools import cycle
+from os import listdir
+from os.path import isfile, join
 
+archivos = ['images/'+ f for f in listdir('./images') if isfile(join('images/',  f))]
 # Se crea la interfaz en donde iran las imagenes
 root = Tk()
 root.title("Traductor de voz a lengua de señas")
@@ -64,10 +67,16 @@ with sr.Microphone() as source:
         # Separamos las palabras y las convertimos a rutas de imagen
         resSplit = palabra.split()
         for index, word in enumerate(resSplit):
-            resSplit[index] = 'images/{}.png'.format(word) 
-
+            resSplit[index] = 'images/{}.png'.format(word)
         # Imprimimos las rutas
-        print(resSplit)
+
+        list1_as_set = set(archivos)
+
+        intersection = list1_as_set.intersection(resSplit)
+        words_with_sign = list(intersection)
+
+
+        print(words_with_sign)
 
         # Creamos el objeto imagen para mostrarlo en pantalla
         image = PhotoImage()
@@ -76,7 +85,7 @@ with sr.Microphone() as source:
         lbl = Label(root, text="", image=image, compound='bottom', font=('Helvatical bold',20)).pack()
        
         # Empezamos el ciclo de las imagenes y cargamos la interfaz
-        images = cycle(resSplit)
+        images = cycle(words_with_sign)
         show_next()
         root.mainloop()
 
